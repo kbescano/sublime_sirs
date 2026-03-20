@@ -24,7 +24,7 @@ export default function MobileMenu() {
     { name: 'Home', href: '/', icon: HomeIcon, activeIcon: HomeSolid },
     { name: 'Activities', href: '/activities', icon: CalendarIcon, activeIcon: CalendarSolid },
     { name: 'Members', href: '/members', icon: ClipboardDocumentIcon, activeIcon: ClipboardSolid },
-    { name: 'Admin', href: '/dashboard-secret-portal', icon: UserCircleIcon, activeIcon: UserSolid },
+    { name: 'Admin', href: '/admin', icon: UserCircleIcon, activeIcon: UserSolid },
   ]
 
   return (
