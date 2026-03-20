@@ -115,7 +115,7 @@ export default function Services() {
             <div key={service.id} className="flex flex-col group">
               
               {/* Added padding here so title doesn't hit the edge */}
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] mb-8 text-zinc-900 px-6 md:px-0">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] mb-8 text-zinc-900 md:px-0">
                 {service.title}
               </h3>
               
@@ -134,7 +134,7 @@ export default function Services() {
               </div>
 
               {/* Added padding here so description doesn't hit the edge */}
-              <div className="flex flex-col px-6 md:px-0">
+              <div className="flex flex-col px-1 md:px-0">
                 <div className="pt-8 pb-4">
                   <div className="relative">
                     <p className={`text-[12px] font-light text-zinc-500 leading-relaxed tracking-tight ${
