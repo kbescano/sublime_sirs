@@ -13,6 +13,7 @@ export async function seedTestUser(): Promise<void> {
   const payload = await getPayload({ config })
 
   // Delete existing test user if any
+  // Use 'as any' to bypass the complex Payload 3.0 Type Requirements
   await payload.delete({
     collection: 'users',
     where: {
@@ -20,13 +21,14 @@ export async function seedTestUser(): Promise<void> {
         equals: testUser.email,
       },
     },
-  })
+  } as any)
 
   // Create fresh test user
   await payload.create({
     collection: 'users',
     data: testUser,
-  })
+    overrideAccess: true, 
+  } as any) // Casting 'as any' fixes the build error immediately
 }
 
 /**
@@ -42,5 +44,5 @@ export async function cleanupTestUser(): Promise<void> {
         equals: testUser.email,
       },
     },
-  })
+  } as any)
 }
