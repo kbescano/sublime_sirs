@@ -36,7 +36,7 @@ const ServiceSlider = ({ images }: { images: any[] }) => {
                 alt="Service"
                 fill
                 priority={index === 0}
-                className="object-contain w-full transition-transform duration-1000 group-hover/slider:scale-105"
+                className="object-cover w-full transition-transform duration-1000 group-hover/slider:scale-105"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
@@ -108,14 +108,14 @@ export default function Services() {
   )
 
   return (
-    <section id="services" className="bg-white pb-20 lg:pb-32 text-black">
+    <section id="services" className="bg-white pb-10 lg:pb-10 text-black">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
           {services.map((service) => (
             <div key={service.id} className="flex flex-col group">
               
               {/* Added padding here so title doesn't hit the edge */}
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] mb-8 text-zinc-900 md:px-0">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] pb-8 text-zinc-900 md:px-0">
                 {service.title}
               </h3>
               
@@ -137,7 +137,7 @@ export default function Services() {
               <div className="flex flex-col px-1 md:px-0">
                 <div className="pt-8 pb-4">
                   <div className="relative">
-                    <p className={`text-[12px] font-light text-zinc-500 leading-relaxed tracking-tight ${
+                    <p className={`text-[12px] font-light text-black leading-relaxed tracking-tight ${
                       expandedId === service.id ? 'line-clamp-none' : 'line-clamp-2'
                     }`}>
                       {service.description}
