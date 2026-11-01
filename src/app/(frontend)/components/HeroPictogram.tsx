@@ -5,7 +5,12 @@ const PIECES = [
   // head
   { points: '86,18 110,10 117,58 90,64', fx: '-18px', fy: '-40px', fr: '-14deg' },
   // torso + arm
-  { points: '88,74 124,78 130,150 110,154 99,112 97,172 74,167 75,104', fx: '-36px', fy: '-10px', fr: '8deg' },
+  {
+    points: '88,74 124,78 130,150 110,154 99,112 97,172 74,167 75,104',
+    fx: '-36px',
+    fy: '-10px',
+    fr: '8deg',
+  },
   // thigh
   { points: '133,148 190,158 176,174 112,177', fx: '30px', fy: '-20px', fr: '-10deg' },
   // shin
@@ -22,9 +27,14 @@ const arcPoint = (deg: number) => {
 }
 const ARC = `M ${arcPoint(-128)} A ${R} ${R} 0 1 0 ${arcPoint(-28)}`
 
-export default function HeroPictogram() {
+// solid: full-opacity version for the intro and page loader (default is the faint hero backdrop)
+export default function HeroPictogram({ solid = false }: { solid?: boolean }) {
   return (
-    <svg viewBox="0 0 210 262" aria-hidden className="picto h-full w-auto overflow-visible">
+    <svg
+      viewBox="0 0 210 262"
+      aria-hidden
+      className={`picto h-full w-auto overflow-visible ${solid ? 'picto-solid' : ''}`}
+    >
       {PIECES.map((piece, i) => (
         <polygon
           key={i}
@@ -46,7 +56,14 @@ export default function HeroPictogram() {
           fill="none"
           strokeWidth="11"
           className="picto-piece"
-          style={{ '--fx': '0px', '--fy': '30px', '--fr': '-40deg', '--d': '200ms' } as React.CSSProperties}
+          style={
+            {
+              '--fx': '0px',
+              '--fy': '30px',
+              '--fr': '-40deg',
+              '--d': '200ms',
+            } as React.CSSProperties
+          }
         />
       </g>
     </svg>

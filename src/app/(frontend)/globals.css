@@ -132,6 +132,16 @@ body {
   animation: picto-float 9s ease-in-out infinite;
 }
 
+.picto-solid {
+  opacity: 1;
+  animation: none;
+}
+
+/* In loaders the wheel arc turns quickly, like a spinner */
+.picto-solid .picto-wheel {
+  animation-duration: 2.4s;
+}
+
 .picto polygon {
   fill: currentColor;
 }
@@ -308,8 +318,8 @@ html.intro-playing .hero-cine {
 }
 
 html.intro-playing .letter,
-html.intro-playing .picto,
-html.intro-playing .picto-piece {
+html.intro-playing section .picto,
+html.intro-playing section .picto-piece {
   animation-play-state: paused;
 }
 

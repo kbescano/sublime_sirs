@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { CLOSING_LINE } from './SiteFooter'
+import HeroPictogram from './HeroPictogram'
 
 export const INTRO_KEY = 'pilantod-intro'
 
@@ -58,6 +59,10 @@ export default function IntroCurtain({ tagline }: { tagline: string }) {
 
   return (
     <div ref={rootRef} aria-hidden className="intro">
+      {/* Wheelchair figure assembles while the counter runs */}
+      <div className="absolute right-4 md:right-[8%] top-[13%] h-[22vh] md:h-[36vh] pointer-events-none">
+        <HeroPictogram solid />
+      </div>
       <div className="intro-inner max-w-[1400px] w-full mx-auto px-4 md:px-8 h-full flex flex-col justify-between pt-6 md:pt-8">
         <div className="flex items-start justify-between text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-white/50">
           <span className="intro-fade">{tagline}</span>
@@ -73,8 +78,7 @@ export default function IntroCurtain({ tagline }: { tagline: string }) {
           className="intro-fade text-2xl md:text-4xl font-light leading-tight tracking-tight max-w-xl"
           style={{ animationDelay: '300ms' }}
         >
-          {CLOSING_LINE.lead}{' '}
-          <span className="text-white/40">{CLOSING_LINE.muted}</span>
+          {CLOSING_LINE.lead} <span className="text-white/40">{CLOSING_LINE.muted}</span>
         </p>
 
         <p className="font-display uppercase leading-[0.8] text-[26vw] tracking-tight text-center select-none pb-[2vw]">
