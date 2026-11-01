@@ -85,7 +85,8 @@ export default function MembersClient({ initialData }: { initialData: Member[] }
                           {member.surname.charAt(0)}
                         </span>
                         <div className="min-w-0">
-                          <p className="font-display uppercase text-xl md:text-2xl leading-none tracking-tight truncate">
+                          {/* leading-tight + pt keep accents (Ñ, É) inside truncate's clipped box */}
+                          <p className="font-display uppercase text-xl md:text-2xl leading-tight pt-[0.1em] tracking-tight truncate">
                             {member.firstName} {member.surname}
                           </p>
                           <p
