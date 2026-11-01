@@ -63,7 +63,7 @@ export default function MediaSlider({ images, alt }: { images: SlideItem[]; alt:
 
       {slides.length > 1 && (
         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-20">
-          <div className="flex gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-2">
+          <div className="flex gap-1.5 rounded-full bg-white/90 px-3 py-2">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -79,14 +79,14 @@ export default function MediaSlider({ images, alt }: { images: SlideItem[]; alt:
             <button
               onClick={scrollPrev}
               aria-label="Previous slide"
-              className="grid place-items-center w-9 h-9 rounded-full bg-white/80 backdrop-blur text-ink hover:bg-cobalt hover:text-white transition-colors"
+              className="grid place-items-center w-9 h-9 rounded-full bg-white/90 text-ink hover:bg-cobalt hover:text-white transition-colors"
             >
               <ArrowLeftIcon className="w-4 h-4" />
             </button>
             <button
               onClick={scrollNext}
               aria-label="Next slide"
-              className="grid place-items-center w-9 h-9 rounded-full bg-white/80 backdrop-blur text-ink hover:bg-cobalt hover:text-white transition-colors"
+              className="grid place-items-center w-9 h-9 rounded-full bg-white/90 text-ink hover:bg-cobalt hover:text-white transition-colors"
             >
               <ArrowRightIcon className="w-4 h-4" />
             </button>

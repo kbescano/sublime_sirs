@@ -23,6 +23,7 @@ export default function SiteHeader({ tagline }: { tagline: string }) {
   }, [])
 
   useEffect(() => {
+    // setState with an unchanged value is a no-op, so this only re-renders at the 40px threshold
     const onScroll = () => setScrolled(window.scrollY > 40)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -36,7 +37,9 @@ export default function SiteHeader({ tagline }: { tagline: string }) {
     <>
       <header
         className={`fixed top-0 inset-x-0 z-[90] transition-all duration-500 ${
-          scrolled ? 'bg-paper/80 backdrop-blur-xl border-b border-ink/5' : 'bg-transparent'
+          scrolled
+            ? 'bg-paper/95 lg:bg-paper/80 lg:backdrop-blur-xl border-b border-ink/5'
+            : 'bg-transparent'
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-16 md:h-20 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] gap-6 items-center">
@@ -50,8 +53,8 @@ export default function SiteHeader({ tagline }: { tagline: string }) {
           </Link>
 
           <p
-            className={`hidden lg:block text-center text-[11px] uppercase tracking-[0.3em] whitespace-nowrap text-ink/60 transition-opacity duration-500 ${
-              light ? 'opacity-0' : 'opacity-100'
+            className={`hidden lg:block text-center text-[11px] uppercase tracking-[0.3em] whitespace-nowrap transition-colors duration-500 ${
+              light ? 'text-white/75' : 'text-ink/60'
             }`}
           >
             {tagline}
@@ -94,7 +97,7 @@ export default function SiteHeader({ tagline }: { tagline: string }) {
             onClick={() => setMenuOpen(true)}
             aria-expanded={menuOpen}
             aria-controls="site-menu"
-            className="lg:hidden justify-self-end flex items-center gap-4 rounded-full bg-ink/85 backdrop-blur-md border border-white/15 text-white pl-5 pr-4 h-11 text-[11px] uppercase tracking-[0.25em] font-medium active:scale-95 transition-transform"
+            className="lg:hidden justify-self-end flex items-center gap-4 rounded-full bg-ink/90 border border-white/15 text-white pl-5 pr-4 h-11 text-[11px] uppercase tracking-[0.25em] font-medium active:scale-95 transition-transform"
           >
             Menu
             <span aria-hidden className="flex flex-col items-end gap-[5px]">

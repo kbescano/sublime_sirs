@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import PageHero from './PageHero'
 import Emblem4D from './Emblem4D'
-import HeroPictogram from './HeroPictogram'
+import WheelchairPictogram from './WheelchairPictogram'
 
 export default async function SectionHeader() {
   const payload = await getPayload({ config })
@@ -14,10 +14,10 @@ export default async function SectionHeader() {
 
   return (
     <PageHero
-      eyebrow={headerData.topLabel}
+      eyebrow="Est. April 1984"
       title={headerData.topDescription}
       visual={<Emblem4D />}
-      backdrop={<HeroPictogram />}
+      mark={<WheelchairPictogram spin="slow" />}
       intro={
         <p>
           A home for the young men of the A. Mabini Chapter — their story, their activities and the

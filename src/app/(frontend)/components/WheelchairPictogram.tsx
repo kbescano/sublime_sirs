@@ -27,13 +27,13 @@ const arcPoint = (deg: number) => {
 }
 const ARC = `M ${arcPoint(-128)} A ${R} ${R} 0 1 0 ${arcPoint(-28)}`
 
-// solid: full-opacity version for the intro and page loader (default is the faint hero backdrop)
-export default function HeroPictogram({ solid = false }: { solid?: boolean }) {
+// Pieces assemble on mount; the wheel arc keeps turning (fast: loader spinner, slow: hero badge)
+export default function WheelchairPictogram({ spin = 'fast' }: { spin?: 'fast' | 'slow' }) {
   return (
     <svg
       viewBox="0 0 210 262"
       aria-hidden
-      className={`picto h-full w-auto overflow-visible ${solid ? 'picto-solid' : ''}`}
+      className={`picto picto-${spin} h-full w-auto overflow-visible`}
     >
       {PIECES.map((piece, i) => (
         <polygon

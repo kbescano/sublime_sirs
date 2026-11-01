@@ -20,16 +20,31 @@ export default function FooterReveal({
     const el = ref.current
     if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    // Geometry is measured on resize only, so scrolling never forces a layout read
+    let footerHeight = 0
+    let uncoveredFrom = 0
+    const measure = () => {
+      footerHeight = el.offsetHeight
+      uncoveredFrom = document.documentElement.scrollHeight - footerHeight
+    }
+    const resize = new ResizeObserver(() => {
+      measure()
+      onScroll()
+    })
+    resize.observe(document.body)
+    measure()
+
     let raf = 0
+    let written = ''
     const update = () => {
       raf = 0
-      const doc = document.documentElement
-      const footerHeight = el.offsetHeight
-      const uncoveredFrom = doc.scrollHeight - footerHeight
       const progress = (window.scrollY + window.innerHeight - uncoveredFrom) / footerHeight
-      el.style.setProperty('--fp', Math.min(Math.max(progress, 0), 1).toFixed(3))
+      const value = Math.min(Math.max(progress, 0), 1).toFixed(3)
+      if (value === written) return // far from the footer: nothing changes, nothing written
+      written = value
+      el.style.setProperty('--fp', value)
     }
-    const onScroll = () => {
+    function onScroll() {
       if (!raf) raf = requestAnimationFrame(update)
     }
 
@@ -39,6 +54,7 @@ export default function FooterReveal({
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      resize.disconnect()
       cancelAnimationFrame(raf)
     }
   }, [])

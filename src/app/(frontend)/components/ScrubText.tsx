@@ -28,19 +28,34 @@ export default function ScrubText({ text, className = '' }: { text: string; clas
       return
     }
 
+    // Position is measured on resize only, so scrolling never forces a layout read
+    let top = 0
+    let height = 0
+    const measure = () => {
+      const rect = el.getBoundingClientRect()
+      top = rect.top + window.scrollY
+      height = rect.height
+    }
+    const resize = new ResizeObserver(() => {
+      measure()
+      onScroll()
+    })
+    resize.observe(document.body)
+    measure()
+
     let lit = -1
     let raf = 0
     const update = () => {
       raf = 0
-      const rect = el.getBoundingClientRect()
       const vh = window.innerHeight
-      const progress = Math.min(Math.max((vh * 0.85 - rect.top) / (rect.height + vh * 0.25), 0), 1)
+      const viewTop = top - window.scrollY
+      const progress = Math.min(Math.max((vh * 0.85 - viewTop) / (height + vh * 0.25), 0), 1)
       const next = Math.round(progress * words.length)
       if (next === lit) return
       words.forEach((word, i) => word.classList.toggle('is-lit', i < next))
       lit = next
     }
-    const onScroll = () => {
+    function onScroll() {
       if (!raf) raf = requestAnimationFrame(update)
     }
 
@@ -50,6 +65,7 @@ export default function ScrubText({ text, className = '' }: { text: string; clas
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      resize.disconnect()
       cancelAnimationFrame(raf)
     }
   }, [])

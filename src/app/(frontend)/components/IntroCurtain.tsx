@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { CLOSING_LINE } from './SiteFooter'
-import HeroPictogram from './HeroPictogram'
+import WheelchairPictogram from './WheelchairPictogram'
 
 export const INTRO_KEY = 'pilantod-intro'
 
@@ -61,7 +61,7 @@ export default function IntroCurtain({ tagline }: { tagline: string }) {
     <div ref={rootRef} aria-hidden className="intro">
       {/* Wheelchair figure assembles while the counter runs */}
       <div className="absolute right-4 md:right-[8%] top-[13%] h-[22vh] md:h-[36vh] pointer-events-none">
-        <HeroPictogram solid />
+        <WheelchairPictogram />
       </div>
       <div className="intro-inner max-w-[1400px] w-full mx-auto px-4 md:px-8 h-full flex flex-col justify-between pt-6 md:pt-8">
         <div className="flex items-start justify-between text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-white/50">

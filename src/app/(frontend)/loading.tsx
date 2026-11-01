@@ -1,4 +1,4 @@
-import HeroPictogram from './components/HeroPictogram'
+import WheelchairPictogram from './components/WheelchairPictogram'
 
 // Shown while a page's server data loads (Activities and Members render on each request)
 export default function Loading() {
@@ -10,7 +10,7 @@ export default function Loading() {
     >
       <div className="flex flex-col items-center gap-8">
         <div className="h-40 md:h-52">
-          <HeroPictogram solid />
+          <WheelchairPictogram />
         </div>
         <span className="text-[11px] uppercase tracking-[0.4em] text-white/70 animate-pulse">
           Loading
