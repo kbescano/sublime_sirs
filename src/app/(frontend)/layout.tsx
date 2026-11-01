@@ -3,7 +3,6 @@ import { Anton, DM_Sans } from 'next/font/google'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import './globals.css'
-import MobileMenu from './components/MobileMenu'
 import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
 import ScrollVelocity from './components/ScrollVelocity'
@@ -35,7 +34,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
         </main>
         <SiteFooter tagline={headerData.topLabel} />
-        <MobileMenu />
         <ScrollVelocity />
       </body>
     </html>

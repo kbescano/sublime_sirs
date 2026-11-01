@@ -46,7 +46,7 @@ export default function PageHero({
         <div
           className={`hero-cine relative max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col justify-end ${
             size === 'lg'
-              ? 'min-h-[100svh] pt-24 pb-28 lg:pb-14'
+              ? 'min-h-[100svh] pt-24 pb-10 md:pb-14'
               : 'min-h-[62svh] pt-32 pb-10 md:pb-14'
           }`}
         >

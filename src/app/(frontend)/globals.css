@@ -410,6 +410,58 @@ html.intro-playing .picto-piece {
   background-size: 100% 1px;
 }
 
+/* ---------- Fullscreen menu (<SiteMenu />) ---------- */
+.site-menu {
+  visibility: hidden;
+  transition: visibility 0s linear 0.7s;
+}
+
+.site-menu.is-open {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.site-menu-backdrop {
+  background: rgba(11, 11, 16, 0.55);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.site-menu.is-open .site-menu-backdrop {
+  opacity: 1;
+}
+
+/* Tiles drop in one after another, slightly rotated, and leave in reverse */
+.site-menu-tile {
+  opacity: 0;
+  transform: translateY(-40px) scale(0.92) rotate(calc(var(--i) * 1.5deg - 2deg));
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    opacity 0.4s ease;
+  transition-delay: calc((3 - var(--i)) * 40ms);
+}
+
+.site-menu.is-open .site-menu-tile {
+  opacity: 1;
+  transform: none;
+  transition-duration: 0.9s, 0.5s;
+  transition-delay: calc(80ms + var(--i) * 80ms);
+}
+
+.site-menu-close {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    opacity 0.3s;
+}
+
+.site-menu.is-open .site-menu-close {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---------- Hero letters ---------- */
 .letter {
   display: inline-block;

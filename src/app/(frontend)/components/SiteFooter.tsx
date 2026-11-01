@@ -63,7 +63,7 @@ export default function SiteFooter({ tagline }: { tagline: string }) {
         </p>
       </div>
       <div className="relative bg-ink border-t border-white/10">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-6 pb-28 lg:pb-6 flex flex-col md:flex-row gap-3 md:items-center justify-between text-[10px] uppercase tracking-[0.25em] text-white/40">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-6 flex flex-col md:flex-row gap-3 md:items-center justify-between text-[10px] uppercase tracking-[0.25em] text-white/40">
           <span>© {new Date().getFullYear()} Pilantod</span>
           <span>Order of DeMolay</span>
           <BackToTop />
