@@ -3,23 +3,22 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  HomeIcon, 
-  CalendarIcon, 
-  UserCircleIcon, 
-  ClipboardDocumentIcon 
+import {
+  HomeIcon,
+  CalendarIcon,
+  UserCircleIcon,
+  ClipboardDocumentIcon,
 } from '@heroicons/react/24/outline'
-import { 
-  HomeIcon as HomeSolid, 
-  CalendarIcon as CalendarSolid, 
-  UserCircleIcon as UserSolid, 
-  ClipboardDocumentIcon as ClipboardSolid 
+import {
+  HomeIcon as HomeSolid,
+  CalendarIcon as CalendarSolid,
+  UserCircleIcon as UserSolid,
+  ClipboardDocumentIcon as ClipboardSolid,
 } from '@heroicons/react/24/solid'
 
 export default function MobileMenu() {
   const pathname = usePathname()
 
-  // Navigation config matches Instagram's structure
   const navItems = [
     { name: 'Home', href: '/', icon: HomeIcon, activeIcon: HomeSolid },
     { name: 'Activities', href: '/activities', icon: CalendarIcon, activeIcon: CalendarSolid },
@@ -28,36 +27,31 @@ export default function MobileMenu() {
   ]
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 z-[100] pb-safe shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
-      <div className="flex justify-around items-center h-16 max-w-md mx-auto">
+    // Floating glass dock
+    <nav className="lg:hidden fixed bottom-4 inset-x-4 z-[100] pb-[env(safe-area-inset-bottom)]">
+      <ul className="mx-auto max-w-sm flex justify-between items-center gap-1 rounded-full bg-ink/85 backdrop-blur-xl p-1.5 shadow-[0_10px_40px_rgba(11,11,16,0.25)] border border-white/10">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           const Icon = isActive ? item.activeIcon : item.icon
 
           return (
-            <Link 
-              key={item.name} 
-              href={item.href}
-              className="relative flex flex-col items-center justify-center w-full h-full transition-transform active:scale-90"
-            >
-              {/* Icon Container */}
-              <div className="relative">
-                <Icon className={`w-6 h-6 transition-colors duration-200 ${isActive ? 'text-black' : 'text-gray-400'}`} />
-                
-                {/* Optional: Indicator Dot like a real app */}
+            <li key={item.name} className="flex-1">
+              <Link
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                className={`flex items-center justify-center gap-2 h-12 rounded-full transition-all active:scale-95 ${
+                  isActive ? 'bg-white text-ink' : 'text-white/60'
+                }`}
+              >
+                <Icon className="w-5 h-5 shrink-0" />
                 {isActive && (
-                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                  <span className="text-[10px] font-medium uppercase tracking-[0.15em]">{item.name}</span>
                 )}
-              </div>
-
-              {/* Label */}
-              <span className={`text-[9px] mt-1 font-bold uppercase tracking-widest ${isActive ? 'text-black' : 'text-gray-300'}`}>
-                {item.name}
-              </span>
-            </Link>
+              </Link>
+            </li>
           )
         })}
-      </div>
+      </ul>
     </nav>
   )
 }

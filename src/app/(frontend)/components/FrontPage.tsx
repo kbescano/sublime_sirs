@@ -1,160 +1,159 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import Image from 'next/image'
-import useEmblaCarousel from 'embla-carousel-react'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { ArrowUpRightIcon } from '@heroicons/react/24/outline'
+import type { HomePage } from '@/payload-types'
+import MediaSlider from './MediaSlider'
+import Reveal from './Reveal'
+import TiltCard from './TiltCard'
 
-// --- SUB-COMPONENT: SLIDER ---
-const ServiceSlider = ({ images }: { images: any[] }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
-  const [selectedIndex, setSelectedIndex] = useState(0)
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-  }, [emblaApi])
-
-  useEffect(() => {
-    if (!emblaApi) return
-    onSelect()
-    emblaApi.on('select', onSelect)
-  }, [emblaApi, onSelect])
-
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
+export default function Services({ services }: { services: HomePage[] }) {
+  const [expandedId, setExpandedId] = useState<HomePage['id'] | null>(null)
 
   return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden cursor-grab active:cursor-grabbing group/slider bg-white" ref={emblaRef}>
-      <div className="flex h-full">
-        {images.map((item, index) => {
-          const imgUrl = item.image?.url || item.url || '';
-          return (
-            <div key={index} className="relative flex-[0_0_100%] min-w-0 h-full">
-              <Image
-                src={imgUrl}
-                alt="Service"
-                fill
-                priority={index === 0}
-                className="object-cover w-full transition-transform duration-1000 group-hover/slider:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-            </div>
-          )
-        })}
-      </div>
+    <section id="services" className="bg-paper text-ink py-24 md:py-36">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+        <Reveal>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
+            <h2 className="font-display uppercase text-6xl md:text-8xl lg:text-9xl leading-[0.85] tracking-tight">
+              Our
+              <br />
+              Story<span className="text-cobalt">.</span>
+            </h2>
+            <p className="max-w-sm text-sm md:text-base text-ink/60 leading-relaxed">
+              Who we are, where we came from and the organization we proudly belong to.
+            </p>
+          </div>
+        </Reveal>
 
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={scrollPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-2 opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300"
-          >
-            <ChevronLeftIcon className="w-5 h-5 text-zinc-400 stroke-[1px]" />
-          </button>
-          <button
-            onClick={scrollNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-2 opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300"
-          >
-            <ChevronRightIcon className="w-5 h-5 text-zinc-400 stroke-[1px]" />
-          </button>
-        </>
-      )}
-      
-      {images.length > 1 && (
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => emblaApi?.scrollTo(i)}
-              className={`h-[1px] transition-all duration-700 ${
-                i === selectedIndex ? 'w-8 bg-zinc-800' : 'w-3 bg-zinc-200'
-              }`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+        <div className="space-y-6 md:space-y-10">
+          {services.map((service, index) => {
+            const isExpanded = expandedId === service.id
+            const reversed = index % 2 === 1
 
-// --- MAIN COMPONENT ---
-export default function Services() {
-  const [services, setServices] = useState<any[]>([])
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        const response = await fetch('/api/home-page?limit=100')
-        const data = await response.json()
-        setServices(data.docs || [])
-      } catch (error) {
-        console.error("Error fetching services:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchServices()
-  }, [])
-
-  if (loading) return (
-    <div className="bg-white py-32 text-center min-h-screen flex items-center justify-center">
-      <span className="text-zinc-300 uppercase tracking-[0.6em] text-[9px] animate-pulse">
-        Initializing Studio...
-      </span>
-    </div>
-  )
-
-  return (
-    <section id="services" className="bg-white pb-10 lg:pb-10 text-black">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
-          {services.map((service) => (
-            <div key={service.id} className="flex flex-col group">
-              
-              {/* Added padding here so title doesn't hit the edge */}
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] pb-8 text-zinc-900 md:px-0">
-                {service.title}
-              </h3>
-              
-              {/* THE CHANGE: 
-                -mx-6 pulls the slider to the very edge of the mobile screen.
-                md:mx-0 resets it for the desktop grid.
-              */}
-              <div className="relative -mx-6 md:mx-0 overflow-hidden bg-white">
-                {service.images && service.images.length > 0 ? (
-                  <ServiceSlider images={service.images} />
-                ) : (
-                  <div className="aspect-[4/5] w-full bg-white border border-zinc-50 flex items-center justify-center text-[8px] uppercase tracking-[0.4em] text-zinc-200">
-                    Media Offline
+            return (
+              <TiltCard
+                key={service.id}
+                index={index}
+                max={10}
+                glareClassName="rounded-[28px] md:rounded-[40px]"
+              >
+                <article
+                  className={`grid md:grid-cols-2 gap-6 md:gap-0 bg-white rounded-[28px] md:rounded-[40px] p-3 md:p-4 ${
+                    reversed ? 'md:[&>*:first-child]:order-2' : ''
+                  }`}
+                >
+                  <div
+                    className="pop rounded-[22px] md:rounded-[32px] bg-white border border-ink/[0.06] overflow-hidden"
+                    style={{ '--depth': '40px' } as React.CSSProperties}
+                  >
+                    <MediaSlider images={service.images || []} alt={service.title} />
                   </div>
-                )}
-              </div>
 
-              {/* Added padding here so description doesn't hit the edge */}
-              <div className="flex flex-col px-1 md:px-0">
-                <div className="pt-8 pb-4">
-                  <div className="relative">
-                    <p className={`text-[12px] font-light text-black leading-relaxed tracking-tight ${
-                      expandedId === service.id ? 'line-clamp-none' : 'line-clamp-2'
-                    }`}>
-                      {service.description}
-                    </p>
-                    {service.description?.length > 80 && (
-                      <button 
-                        onClick={() => setExpandedId(expandedId === service.id ? null : service.id)}
-                        className="mt-4 text-[8px] tracking-widest text-black hover:text-zinc-400 uppercase transition-colors border-b border-zinc-100 pb-1"
+                  <div className="flex flex-col justify-between gap-10 p-4 md:p-10 lg:p-14">
+                    <div
+                      className="pop flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-ink/40"
+                      style={{ '--depth': '25px' } as React.CSSProperties}
+                    >
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <span>/ {String(services.length).padStart(2, '0')}</span>
+                    </div>
+
+                    <div>
+                      <h3
+                        className="pop font-display uppercase text-4xl md:text-5xl lg:text-6xl leading-[0.95] tracking-tight mb-6"
+                        style={{ '--depth': '70px' } as React.CSSProperties}
                       >
-                        {expandedId === service.id ? 'less' : 'more'}
-                      </button>
-                    )}
+                        {service.title}
+                      </h3>
+                      <p
+                        style={{ '--depth': '30px' } as React.CSSProperties}
+                        className={`pop text-[15px] md:text-base text-ink/70 leading-relaxed whitespace-pre-line ${
+                          isExpanded ? '' : 'line-clamp-4'
+                        }`}
+                      >
+                        {service.description}
+                      </p>
+                      {service.description?.length > 200 && (
+                        <button
+                          onClick={() => setExpandedId(isExpanded ? null : service.id)}
+                          style={{ '--depth': '90px' } as React.CSSProperties}
+                          className="pop mt-8 inline-flex items-center gap-2 rounded-full border border-ink/15 px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-cobalt hover:border-cobalt hover:text-white transition-colors"
+                        >
+                          {isExpanded ? 'Read less' : 'Read more'}
+                          <span className={`transition-transform ${isExpanded ? 'rotate-45' : ''}`}>
+                            +
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                </article>
+              </TiltCard>
+            )
+          })}
+        </div>
+
+        <div className="mt-24 md:mt-36 grid md:grid-cols-2 gap-4 md:gap-6">
+          <TiltCard index={0} max={18} glareClassName="rounded-[28px] md:rounded-[40px]">
+            <Link
+              href="/activities"
+              className="group relative rounded-[28px] md:rounded-[40px] bg-cobalt text-white p-8 md:p-12 min-h-[260px] h-full flex flex-col justify-between"
+            >
+              <span
+                className="pop text-[11px] uppercase tracking-[0.3em] text-white/70"
+                style={{ '--depth': '30px' } as React.CSSProperties}
+              >
+                What we do
+              </span>
+              <span className="flex items-end justify-between gap-4">
+                <span
+                  className="pop font-display uppercase text-5xl md:text-7xl leading-[0.9]"
+                  style={{ '--depth': '45px' } as React.CSSProperties}
+                >
+                  Activities
+                </span>
+                <span
+                  className="pop shrink-0"
+                  style={{ '--depth': '70px' } as React.CSSProperties}
+                >
+                  <span className="grid place-items-center w-14 h-14 rounded-full bg-white text-cobalt transition-transform duration-500 group-hover:rotate-45">
+                    <ArrowUpRightIcon className="w-6 h-6" />
+                  </span>
+                </span>
+              </span>
+            </Link>
+          </TiltCard>
+          <TiltCard index={1} max={18} glareClassName="rounded-[28px] md:rounded-[40px]">
+            <Link
+              href="/members"
+              className="group relative rounded-[28px] md:rounded-[40px] bg-ink text-white p-8 md:p-12 min-h-[260px] h-full flex flex-col justify-between"
+            >
+              <span
+                className="pop text-[11px] uppercase tracking-[0.3em] text-white/50"
+                style={{ '--depth': '30px' } as React.CSSProperties}
+              >
+                The brotherhood
+              </span>
+              <span className="flex items-end justify-between gap-4">
+                <span
+                  className="pop font-display uppercase text-5xl md:text-7xl leading-[0.9]"
+                  style={{ '--depth': '45px' } as React.CSSProperties}
+                >
+                  Members
+                </span>
+                <span
+                  className="pop shrink-0"
+                  style={{ '--depth': '70px' } as React.CSSProperties}
+                >
+                  <span className="grid place-items-center w-14 h-14 rounded-full bg-white text-ink transition-transform duration-500 group-hover:rotate-45">
+                    <ArrowUpRightIcon className="w-6 h-6" />
+                  </span>
+                </span>
+              </span>
+            </Link>
+          </TiltCard>
         </div>
       </div>
     </section>

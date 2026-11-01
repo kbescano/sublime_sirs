@@ -1,15 +1,464 @@
 @import "tailwindcss";
 
-html, 
+@theme {
+  --color-cobalt: #0d28b1;
+  --color-cobalt-deep: #081a7a;
+  --color-paper: #f4f3ef;
+  --color-ink: #0b0b10;
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anton), Impact, 'Arial Narrow', sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* clip (not hidden) so sticky hero/footer keep working */
+html,
 body {
   max-width: 100vw;
-  overflow-x: hidden !important;
-  /* Optional: Smooth scrolling for those anchor links like "Services" */
+  overflow-x: clip !important;
   scroll-behavior: smooth;
 }
 
-/* Also apply to the Next.js root div for extra safety */
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-cobalt);
+  color: white;
+}
+
 #__next {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Scroll reveal — toggled by <Reveal /> */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Static deep-3D emblem ---------- */
+.emblem-stage {
+  container-type: inline-size;
+  perspective: 1600px;
+}
+
+/* Fixed pose; depth and thickness scale with the coin's width via container units */
+.emblem-rig {
+  --w: 100cqw;
+  --t: calc(var(--w) * 0.16);
+  transform-style: preserve-3d;
+  transform: rotateX(14deg) rotateY(-32deg);
+}
+
+.emblem-shadow {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: -12%;
+  height: 14%;
+  border-radius: 50%;
+  background: rgba(0, 0, 30, 0.55);
+  filter: blur(28px);
+}
+
+.emblem-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.emblem-front,
+.emblem-crest {
+  backface-visibility: hidden;
+}
+
+.emblem-front {
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+/* Coin edge: smooth navy matching the seal ring, lighter through the middle for roundness */
+.emblem-edge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: var(--t);
+  background: linear-gradient(to bottom, #01013f, #1a1f8f 50%, #01013f);
+}
+
+.emblem-glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--gx, 30%) var(--gy, 20%), rgba(255, 255, 255, 0.6), transparent 45%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.emblem-crest {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 24px rgba(0, 4, 40, 0.5));
+}
+
+@keyframes wheel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Hero wheelchair pictogram (low-opacity backdrop) ---------- */
+.picto {
+  color: white;
+  opacity: 0.09;
+  animation: picto-float 9s ease-in-out infinite;
+}
+
+.picto polygon {
+  fill: currentColor;
+}
+
+.picto path {
+  stroke: currentColor;
+}
+
+.picto-piece {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: picto-in 1.8s var(--ease-out-expo) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Arc slowly turns around the wheel centre, like the coin's wheel */
+.picto-wheel {
+  transform-box: view-box;
+  transform-origin: 95px 190px;
+  animation: wheel-spin 40s linear infinite;
+}
+
+@keyframes picto-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--fx), var(--fy)) rotate(var(--fr));
+  }
+}
+
+@keyframes picto-float {
+  50% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+}
+
+/* ---------- 3D cards (<TiltCard />) ---------- */
+.card3d {
+  perspective: 1400px;
+}
+
+.card3d,
+.card3d-enter,
+.card3d-lean {
+  height: 100%;
+}
+
+/* Fly in from depth, alternating left/right by --dir, staggered by --i */
+.card3d-enter {
+  transform-style: preserve-3d;
+  opacity: 0;
+  transform: translate3d(0, 160px, -420px) rotateX(-42deg) rotateY(calc(var(--dir) * 28deg))
+    rotateZ(calc(var(--dir) * -8deg));
+  transition:
+    transform 1.6s var(--ease-out-expo),
+    opacity 1s ease;
+  transition-delay: calc(var(--i) * 110ms);
+}
+
+.card3d.is-in .card3d-enter {
+  opacity: 1;
+  transform: none;
+}
+
+/* Lean back and skew with scroll speed */
+.card3d-lean {
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--scroll-v, 0) * 0.35deg)) skewY(calc(var(--scroll-v, 0) * -0.05deg));
+}
+
+.card3d-inner {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card3d-inner :where(*) {
+  transform-style: preserve-3d;
+}
+
+/* Layers that float off the card surface; they lift further on hover */
+.pop {
+  transform: translateZ(var(--depth, 0px));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+.card3d-inner.is-hover .pop {
+  transform: translateZ(calc(var(--depth, 0px) * 1.5));
+}
+
+.card3d-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateZ(2px);
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.35), transparent 45%);
+  transition: opacity 0.4s;
+}
+
+.card3d-inner.is-hover .card3d-glare {
+  opacity: 1;
+}
+
+/* ---------- Cinematic intro (<IntroCurtain />) ---------- */
+.intro {
+  display: none;
+}
+
+html.intro-playing {
+  overflow: hidden;
+}
+
+html.intro-playing .intro,
+.intro.is-leaving {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  background: var(--color-ink);
+  color: white;
+}
+
+/* Curtain lifts on a curve while its contents rush up faster */
+.intro {
+  transition:
+    transform 1.3s cubic-bezier(0.76, 0, 0.24, 1),
+    border-radius 1.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.intro.is-leaving {
+  transform: translateY(-100%);
+  border-bottom-left-radius: 50% 18vh;
+  border-bottom-right-radius: 50% 18vh;
+}
+
+.intro-inner {
+  transition:
+    transform 1.3s cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 0.9s ease;
+}
+
+.intro.is-leaving .intro-inner {
+  transform: translateY(-25%);
+  opacity: 0.3;
+}
+
+.intro-letter {
+  display: inline-block;
+  animation: letter-in 1.2s var(--ease-out-expo) backwards;
+}
+
+.intro-fade {
+  animation: intro-fade 1s ease backwards;
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Hero waits behind the curtain, then settles in from a zoomed blur */
+.hero-cine {
+  transition:
+    transform 1.8s var(--ease-out-expo),
+    filter 1.2s ease;
+}
+
+html.intro-playing .hero-cine {
+  transform: scale(1.12);
+  filter: blur(8px);
+}
+
+html.intro-playing .letter,
+html.intro-playing .picto,
+html.intro-playing .picto-piece {
+  animation-play-state: paused;
+}
+
+/* ---------- Pinned hero, page slides over it (<StickyHero />) ---------- */
+.hero-sticky > section {
+  transform: scale(calc(1 - var(--hero-p, 0) * 0.1));
+  transform-origin: 50% 0%;
+}
+
+.hero-dim {
+  opacity: calc(var(--hero-p, 0) * 0.75);
+}
+
+.stage-over {
+  position: relative;
+  z-index: 10;
+  background: var(--color-paper);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -24px 60px rgba(11, 11, 16, 0.18);
+}
+
+@media (min-width: 768px) {
+  .stage-over {
+    border-radius: 56px 56px 0 0;
+  }
+}
+
+/* ---------- Scroll-filled statement (<ScrubText />) ---------- */
+.scrub-word {
+  color: rgba(11, 11, 16, 0.13);
+  transition: color 0.45s ease;
+}
+
+.scrub-word.is-lit {
+  color: var(--color-ink);
+}
+
+.scrub-accent.is-lit {
+  color: var(--color-cobalt);
+}
+
+.scrub-seal {
+  display: inline-block;
+  height: 0.85em;
+  width: 0.85em;
+  border-radius: 50%;
+  vertical-align: -0.08em;
+  opacity: 0.15;
+  transform: rotate(-30deg) scale(0.7);
+  transition:
+    opacity 0.45s ease,
+    transform 0.8s var(--ease-out-expo);
+}
+
+.scrub-seal.is-lit {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Footer reveal (<FooterReveal /> sets --fp: 0 hidden → 1 uncovered) ---------- */
+.footer-drift {
+  transform: translateY(calc((1 - var(--fp, 1)) * -18%));
+}
+
+/* Top rows are uncovered last, so they settle in during the second half */
+.footer-rise {
+  --rp: clamp(0, var(--fp, 1) * 2.2 - 0.9 - var(--i) * 0.15, 1);
+  opacity: var(--rp);
+  transform: translateY(calc((1 - var(--rp)) * 40px));
+}
+
+/* Wordmark letters rise one after another with the scroll */
+.footer-letter {
+  --lp: clamp(0, var(--fp, 1) * 1.8 - var(--i) * 0.09, 1);
+  display: inline-block;
+  transform: translateY(calc((1 - var(--lp)) * 110%)) rotate(calc((1 - var(--lp)) * 12deg));
+}
+
+.footer-letter-hover {
+  display: inline-block;
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    color 0.3s;
+}
+
+.footer-letter-hover:hover {
+  transform: translateY(-10%) rotate(-4deg);
+  color: #b9c6ff;
+}
+
+.footer-link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.45s var(--ease-out-expo);
+}
+
+.footer-link:hover {
+  background-size: 100% 1px;
+}
+
+/* ---------- Hero letters ---------- */
+.letter {
+  display: inline-block;
+  animation: letter-in 1.3s var(--ease-out-expo) backwards;
+  animation-delay: var(--rise-delay, 0ms);
+  transition: transform 0.5s var(--ease-out-expo), color 0.3s;
+}
+
+.letter:hover {
+  transform: translateY(-0.12em) rotate(-6deg) scale(1.08);
+  color: #b9c6ff;
+}
+
+@keyframes letter-in {
+  from {
+    transform: translateY(110%) rotate(12deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero-sticky > section {
+    transform: none;
+  }
+  .card3d-enter {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .card3d-lean {
+    transform: none;
+  }
+  .pop {
+    transition: none;
+  }
+  .letter,
+  .picto,
+  .picto-piece,
+  .picto-wheel {
+    animation: none;
+  }
 }
